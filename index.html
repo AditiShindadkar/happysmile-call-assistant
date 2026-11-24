@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>HappySmile Call Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>try{var t=localStorage.getItem('hs_theme');if(t)document.documentElement.setAttribute('data-theme',t);}catch(e){}</script>
+<style>
+:root{
+ --bg:#f2f6f5;--surface:#ffffff;--surface-2:#f7faf9;--sunken:#eaf1ef;
+ --border:#dfe8e6;--border-strong:#c8d5d2;--text:#142b29;--text-2:#3a504e;--muted:#667b78;--faint:#9aaba8;
+ --teal:#0f766e;--teal-hover:#0b5f58;--teal-soft:#dcf1ed;--teal-text:#ffffff;
+ --green:#1d7a4c;--green-bg:#e2f4e9;--amber:#8f5c06;--amber-bg:#fcefd6;--red:#b3261e;--red-bg:#fce6e4;
+ --blue:#2c5aa0;--blue-bg:#e5edfa;--grey:#5b6b69;--grey-bg:#edf1f0;
+ --overlay:rgba(16,38,36,.35);
+ --shadow-sm:0 1px 2px rgba(20,43,41,.05);--shadow:0 1px 3px rgba(20,43,41,.05),0 10px 30px rgba(20,43,41,.07);--shadow-lg:0 30px 70px rgba(20,43,41,.18);
+ --ring:0 0 0 3px rgba(15,118,110,.22);
+ --font:'Plus Jakarta Sans','Noto Sans Devanagari',ui-sans-serif,system-ui,-apple-system,'Segoe UI',sans-serif;
+ color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+ --bg:#0d1716;--surface:#13201f;--surface-2:#172625;--sunken:#0f1b1a;
+ --border:#233533;--border-strong:#314a47;--text:#e4efed;--text-2:#bfd0cd;--muted:#8ea3a0;--faint:#5c706d;
+ --teal:#4fc3b6;--teal-hover:#72d4c8;--teal-soft:#173a36;--teal-text:#06201d;
+ --green:#6fd39c;--green-bg:#163526;--amber:#f0b95a;--amber-bg:#3a2b10;--red:#f39a92;--red-bg:#3d1c1a;
+ --blue:#8fb4f0;--blue-bg:#1a2a44;--grey:#a5b4b2;--grey-bg:#1f2c2b;--overlay:rgba(0,0,0,.6);
+ --ring:0 0 0 3px rgba(79,195,182,.3);color-scheme:dark}}
+:root[data-theme="dark"]{
+ --bg:#0d1716;--surface:#13201f;--surface-2:#172625;--sunken:#0f1b1a;
+ --border:#233533;--border-strong:#314a47;--text:#e4efed;--text-2:#bfd0cd;--muted:#8ea3a0;--faint:#5c706d;
+ --teal:#4fc3b6;--teal-hover:#72d4c8;--teal-soft:#173a36;--teal-text:#06201d;
+ --green:#6fd39c;--green-bg:#163526;--amber:#f0b95a;--amber-bg:#3a2b10;--red:#f39a92;--red-bg:#3d1c1a;
+ --blue:#8fb4f0;--blue-bg:#1a2a44;--grey:#a5b4b2;--grey-bg:#1f2c2b;--overlay:rgba(0,0,0,.6);
+ --ring:0 0 0 3px rgba(79,195,182,.3);color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:400 14.5px/1.55 var(--font);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+h1,h2,h3,h4{margin:0 0 .35em;font-weight:700;letter-spacing:-.015em;line-height:1.2}
+button,input,select{font:inherit;color:inherit}
+a{color:var(--teal)}
+.muted{color:var(--muted)}.small{font-size:12.5px}
+.row{display:flex;gap:10px;align-items:center}.grow{flex:1;min-width:0}
+:focus-visible{outline:none;box-shadow:var(--ring);border-radius:8px}
+
+/* ---------- reviewer switch (not part of the product) ---------- */
+.switchbar{position:sticky;top:0;z-index:15;display:flex;align-items:center;gap:12px;padding:10px 20px;background:color-mix(in srgb,var(--bg) 90%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--border)}
+.switchbar .title{font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px}
+.logo{width:26px;height:26px;border-radius:8px;background:var(--teal);color:var(--teal-text);display:grid;place-items:center;flex:none}
+.seg{margin:0 auto;display:inline-flex;padding:3px;gap:2px;background:var(--sunken);border:1px solid var(--border);border-radius:11px}
+.seg a{display:flex;align-items:center;gap:8px;height:32px;padding:0 14px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:600;font-size:13.5px;white-space:nowrap}
+.seg a .n{display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:var(--border);color:var(--text-2);font-size:11px}
+.seg a[aria-current="page"]{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+.seg a[aria-current="page"] .n{background:var(--teal);color:var(--teal-text)}
+.icon-btn{width:34px;height:34px;display:grid;place-items:center;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer;color:var(--text-2)}
+.icon-btn:hover{border-color:var(--border-strong)}
+.screen[hidden]{display:none}
+.caption{text-align:center;color:var(--muted);font-size:13px;margin:0 0 18px}
+.caption b{color:var(--text)}
+
+/* ---------- buttons, fields, chips ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:36px;padding:0 14px;border-radius:9px;border:1px solid var(--border-strong);background:var(--surface);color:var(--text);font-weight:600;font-size:13.5px;cursor:pointer;white-space:nowrap;text-decoration:none;transition:background .15s,border-color .15s}
+.btn:hover:not(:disabled){border-color:var(--teal);background:var(--surface-2)}
+.btn-primary{background:var(--teal);border-color:var(--teal);color:var(--teal-text)}
+.btn-primary:hover:not(:disabled){background:var(--teal-hover);border-color:var(--teal-hover)}
+.btn-lg{height:48px;font-size:15px;border-radius:12px;width:100%}
+.btn-sm{height:30px;padding:0 10px;font-size:12.5px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+label{display:block;font-weight:600;font-size:13px;margin:14px 0 6px;color:var(--text-2)}
+input[type=text],input[type=tel],select{width:100%;height:44px;padding:0 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--surface);transition:border-color .15s,box-shadow .15s}
+input:focus,select:focus{outline:none;border-color:var(--teal);box-shadow:var(--ring)}
+.chips{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{margin:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;height:56px;border:1px solid var(--border-strong);border-radius:10px;background:var(--surface);cursor:pointer;font-weight:600;font-size:13px;color:var(--text);text-align:center}
+.chips label small{font-weight:500;font-size:11px;color:var(--muted)}
+.chips input:checked+label{border-color:var(--teal);background:var(--teal-soft);box-shadow:inset 0 0 0 1px var(--teal)}
+.chips input:focus-visible+label{box-shadow:var(--ring)}
+.consent{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:12.5px;color:var(--muted)}
+.consent input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--teal);flex:none}
+.consent label{margin:0;font-weight:500;font-size:12.5px;color:var(--muted)}
+
+.chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;border-radius:999px;font-weight:600;font-size:12px;white-space:nowrap}
+.chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.c-booked{background:var(--green-bg);color:var(--green)}
+.c-staff{background:var(--amber-bg);color:var(--amber)}
+.c-urgent{background:var(--red-bg);color:var(--red)}
+.c-sched{background:var(--blue-bg);color:var(--blue)}
+.c-none{background:var(--grey-bg);color:var(--grey)}
+.c-urgent::before{animation:pulse 1.4s ease-in-out infinite}
+.score{display:inline-grid;place-items:center;min-width:34px;height:24px;padding:0 7px;border-radius:7px;font-weight:700;font-size:12.5px;background:var(--green-bg);color:var(--green)}
+.score.mid{background:var(--amber-bg);color:var(--amber)}
+.score.low{background:var(--red-bg);color:var(--red)}
+.score.na{background:var(--grey-bg);color:var(--faint)}
+
+/* ---------- screen 1: phone ---------- */
+.stage{padding:36px 16px 56px;display:flex;flex-direction:column;align-items:center}
+.device{width:100%;max-width:380px;background:var(--surface);border-radius:40px;border:1px solid var(--border);box-shadow:var(--shadow-lg);padding:12px;position:relative}
+.device-inner{border-radius:30px;background:var(--surface);overflow:hidden;border:1px solid var(--border);min-height:720px;display:flex;flex-direction:column}
+.status{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 6px;font-size:12px;font-weight:600}
+.notch{width:96px;height:24px;border-radius:999px;background:var(--text);opacity:.9}
+.site-head{display:flex;align-items:center;gap:8px;padding:10px 20px 12px;border-bottom:1px solid var(--border);font-weight:700}
+.site-head .logo{width:24px;height:24px;border-radius:7px}
+.site-head .call{margin-left:auto;font-size:12px;font-weight:600;color:var(--teal);text-decoration:none}
+.p-body{padding:18px 20px 22px;flex:1;display:flex;flex-direction:column}
+.p-body h1{font-size:22px;margin-bottom:4px}
+.p-body .sub{color:var(--muted);font-size:13.5px;margin:0}
+.p-note{font-size:11.5px;color:var(--muted);margin:12px 0 0;text-align:center}
+.state-toggle{margin-top:18px;display:inline-flex;gap:2px;padding:3px;background:var(--sunken);border:1px solid var(--border);border-radius:10px}
+.state-toggle button{border:0;background:transparent;height:30px;padding:0 12px;border-radius:7px;font-weight:600;font-size:12.5px;color:var(--muted);cursor:pointer}
+.state-toggle button[aria-pressed="true"]{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+
+.done{flex:1;display:flex;flex-direction:column;animation:fade-up .3s ease}
+.ring{width:84px;height:84px;margin:18px auto 14px;border-radius:50%;background:var(--teal-soft);display:grid;place-items:center;position:relative;color:var(--teal)}
+.ring::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--teal);opacity:.35;animation:ring 2s ease-out infinite}
+.done h2{text-align:center;font-size:21px;margin-bottom:6px}
+.done .when{text-align:center;color:var(--text-2);margin:0 0 4px}
+.done .from{text-align:center;color:var(--muted);font-size:12.5px;margin:0 0 18px}
+.sumcard{border:1px solid var(--border);border-radius:14px;background:var(--surface-2);padding:4px 14px}
+.sumcard div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.sumcard div:last-child{border-bottom:0}
+.sumcard span{color:var(--muted)}
+.sumcard b{font-weight:600;text-align:right}
+.helpbox{margin-top:12px;padding:12px 14px;border-radius:14px;background:var(--amber-bg);color:var(--text);font-size:12.5px}
+.helpbox b{color:var(--amber)}
+.done .btn{margin-top:auto}
+
+/* ---------- screen 2: clinic app ---------- */
+.app{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:calc(100vh - 55px)}
+.side{background:var(--surface);border-right:1px solid var(--border);padding:18px 12px;display:flex;flex-direction:column;gap:4px}
+.side .brand{display:flex;align-items:center;gap:9px;font-weight:700;padding:0 8px 16px}
+.side a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;color:var(--text-2);text-decoration:none;font-weight:600;font-size:13.5px}
+.side a.on{background:var(--teal-soft);color:var(--teal)}
+.side a[aria-disabled="true"]{color:var(--faint);cursor:default}
+.side a .count{margin-left:auto;font-size:11.5px;background:var(--teal);color:var(--teal-text);border-radius:999px;padding:1px 7px}
+.side .who{margin-top:auto;display:flex;gap:10px;align-items:center;padding:10px 8px;border-top:1px solid var(--border);font-size:12.5px}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--amber-bg);color:var(--amber);display:grid;place-items:center;font-weight:700;font-size:12px;flex:none}
+.main{padding:24px 28px 48px;min-width:0}
+.main-head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;margin-bottom:18px}
+.main-head h1{font-size:22px;margin:0}
+.main-head .grow p{margin:2px 0 0;color:var(--muted);font-size:13px}
+.main-head select{width:auto;height:36px;padding:0 32px 0 12px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:var(--shadow-sm)}
+.stat .k{font-size:12.5px;color:var(--muted);font-weight:500}
+.stat .v{font-size:24px;font-weight:700;letter-spacing:-.02em;margin-top:2px}
+.stat .d{font-size:11.5px;color:var(--green);font-weight:600}
+.stat .d.warn{color:var(--amber)}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow-sm);overflow:hidden}
+.tabs{display:flex;gap:4px;padding:10px 12px 0;border-bottom:1px solid var(--border);overflow-x:auto}
+.tabs button{border:0;background:transparent;padding:8px 10px 10px;font-weight:600;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;border-radius:0}
+.tabs button .c{margin-left:6px;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--sunken);color:var(--text-2)}
+.tabs button[aria-selected="true"]{color:var(--teal);border-bottom-color:var(--teal)}
+.tabs button[aria-selected="true"] .c{background:var(--teal-soft);color:var(--teal)}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:820px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--border);vertical-align:middle;font-size:13.5px}
+th{font-size:11.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:var(--surface-2)}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.urgent td:first-child{box-shadow:inset 3px 0 0 var(--red)}
+td .nm{font-weight:600}
+td .sb{font-size:12px;color:var(--muted)}
+td.sum{color:var(--text-2);max-width:280px}
+td.next{font-weight:600}
+td.next.hot{color:var(--red)}
+.owner{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-2)}
+.owner i{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-size:10px;font-weight:700;background:var(--teal-soft);color:var(--teal)}
+.owner.fd i{background:var(--amber-bg);color:var(--amber)}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+
+/* drawer */
+.backdrop{position:fixed;inset:0;background:var(--overlay);display:none;justify-content:flex-end;z-index:30;animation:fade .2s ease}
+.backdrop.on{display:flex}
+.drawer{width:min(620px,100%);height:100%;overflow-y:auto;background:var(--bg);border-left:1px solid var(--border);box-shadow:var(--shadow-lg);animation:slide .25s cubic-bezier(.2,.8,.2,1)}
+.d-head{position:sticky;top:0;z-index:1;background:var(--surface);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.d-head h2{font-size:19px;margin-bottom:6px}
+.d-head .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)}
+.d-body{padding:18px 20px 40px;display:grid;gap:12px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px}
+.card h3{font-size:14px;margin-bottom:10px}
+.card p{margin:0;color:var(--text-2)}
+.nextbox{background:var(--teal-soft);border-color:transparent}
+.nextbox h3{color:var(--teal);margin-bottom:4px}
+.nextbox.hot{background:var(--red-bg)}.nextbox.hot h3{color:var(--red)}
+.nextbox.warm{background:var(--amber-bg)}.nextbox.warm h3{color:var(--amber)}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px}
+.facts div{background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:9px 11px}
+.facts span{display:block;font-size:11.5px;color:var(--muted)}
+.facts b{font-weight:600;font-size:13.5px}
+.part{margin:12px 0 0}
+.part .row{font-size:13.5px}
+.part .v{font-weight:700}
+.bar{height:7px;border-radius:99px;background:var(--sunken);overflow:hidden;margin:6px 0 3px}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--teal)}
+.player{display:flex;align-items:center;gap:12px;background:var(--surface-2);border:1px solid var(--border);border-radius:999px;padding:6px 14px 6px 6px}
+.play{width:34px;height:34px;border-radius:50%;border:0;background:var(--teal);color:var(--teal-text);display:grid;place-items:center;cursor:pointer;flex:none}
+.wave{flex:1;display:flex;align-items:center;gap:3px;height:24px;overflow:hidden}
+.wave i{width:3px;flex:none;border-radius:2px;background:var(--border-strong)}
+.wave i.p{background:var(--teal)}
+.timeline{list-style:none;margin:0;padding:0}
+.timeline li{position:relative;padding:0 0 14px 22px;font-size:13.5px;color:var(--text-2)}
+.timeline li::before{content:"";position:absolute;left:4px;top:6px;width:8px;height:8px;border-radius:50%;background:var(--teal)}
+.timeline li::after{content:"";position:absolute;left:7.5px;top:16px;bottom:0;width:1px;background:var(--border-strong)}
+.timeline li:last-child{padding-bottom:0}.timeline li:last-child::after{display:none}
+.timeline li.future::before{background:var(--surface);border:2px solid var(--border-strong);width:6px;height:6px}
+.timeline b{color:var(--text);font-weight:600;margin-right:6px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:86%;padding:10px 13px;border-radius:14px;font-size:13.5px}
+.bub .who{font-size:11.5px;font-weight:700;margin-bottom:2px;color:var(--muted)}
+.bub .who .tm{font-weight:500;margin-left:6px;color:var(--faint)}
+.b-ai{align-self:flex-start;background:var(--surface-2);border:1px solid var(--border);border-bottom-left-radius:4px}
+.b-ai .who{color:var(--teal)}
+.b-me{align-self:flex-end;background:var(--teal-soft);border-bottom-right-radius:4px}
+.flag{display:inline-flex;margin-top:6px;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--amber-bg);color:var(--amber)}
+.flag.red{background:var(--red-bg);color:var(--red)}
+.flag.ok{background:var(--green-bg);color:var(--green)}
+.flag.info{background:var(--blue-bg);color:var(--blue)}
+
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slide{from{transform:translateX(28px);opacity:.6}to{transform:none;opacity:1}}
+@keyframes fade-up{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ring{0%{transform:scale(.9);opacity:.5}100%{transform:scale(1.25);opacity:0}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+@media(max-width:960px){
+ .app{grid-template-columns:minmax(0,1fr)}
+ .side{flex-direction:row;align-items:center;overflow-x:auto;padding:10px 12px;border-right:0;border-bottom:1px solid var(--border)}
+ .side .brand{padding:0 8px 0 0}.side .who{display:none}
+ .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:640px){
+ .switchbar{padding:8px 12px;gap:8px}.switchbar .title span{display:none}
+ .seg a{padding:0 10px;font-size:12.5px}.seg a .lbl-long{display:none}
+ .stage{padding:20px 12px 40px}
+ .device{border-radius:0;border:0;box-shadow:none;padding:0;background:transparent}
+ .device-inner{min-height:0;border-radius:20px}.status{display:none}
+ .main{padding:18px 16px 40px}
+ .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+</style>
+</head>
+<body>
+
+<div class="switchbar">
+ <div class="title"><span class="logo" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c-2.5 0-4 2-4 4.5 0 3 1.2 4.5 2 8 .5 2.5 1 5.5 2.6 5.5 1.8 0 1.6-4.5 4.4-4.5s2.6 4.5 4.4 4.5c1.6 0 2.1-3 2.6-5.5.8-3.5 2-5 2-8C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></svg></span><span>HappySmile mockup</span></div>
+ <nav class="seg" aria-label="Choose a screen">
+  <a href="#patient" data-screen="patient"><span class="n">1</span><span>Patient<span class="lbl-long"> asks for a call</span></span></a>
+  <a href="#staff" data-screen="staff"><span class="n">2</span><span>Clinic<span class="lbl-long"> sees afterwards</span></span></a>
+ </nav>
+ <button class="icon-btn" id="theme" type="button" aria-label="Switch light or dark mode"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+</div>
+
+<!-- ================= SCREEN 1 ================= -->
+<section class="screen" id="screen-patient" aria-label="Screen 1: the moment a person asks to be contacted">
+<div class="stage">
+ <p class="caption"><b>Screen 1.</b> The moment a person asks to be contacted, on the HappySmile website.</p>
+ <div class="device">
+  <div class="device-inner">
+   <div class="status" aria-hidden="true"><span>11:42</span><span class="notch"></span><span>5G</span></div>
+   <div class="site-head"><span class="logo" aria-hidden="true"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c-2.5 0-4 2-4 4.5 0 3 1.2 4.5 2 8 .5 2.5 1 5.5 2.6 5.5 1.8 0 1.6-4.5 4.4-4.5s2.6 4.5 4.4 4.5c1.6 0 2.1-3 2.6-5.5.8-3.5 2-5 2-8C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></svg></span>HappySmile<a class="call" href="#patient">12 clinics</a></div>
+
+   <!-- form state -->
+   <form class="p-body" id="form" novalidate>
+    <h1>Book a free smile check</h1>
+    <p class="sub">Tell us what you need and when to call. We'll call you to book a visit.</p>
+    <label for="n">Your name</label><input type="text" id="n" value="Riya Mehta" autocomplete="name">
+    <label for="p">Mobile number</label><input type="tel" id="p" value="98XXXXXX21" inputmode="tel" autocomplete="tel">
+    <label for="t">Treatment</label>
+    <select id="t"><option>Braces</option><option>Whitening</option><option>Implants</option><option>Not sure yet</option></select>
+    <label for="c">Nearest clinic</label>
+    <select id="c"><option>Pune – Baner</option><option>Pune – Kothrud</option><option>Mumbai – Andheri</option></select>
+    <label id="wl">When should we call?</label>
+    <div class="chips" role="radiogroup" aria-labelledby="wl">
+     <input type="radio" name="w" id="w1" value="now" checked><label for="w1">Right now<small>within 5 min</small></label>
+     <input type="radio" name="w" id="w2" value="hour"><label for="w2">In 1 hour<small>around 12:45</small></label>
+     <input type="radio" name="w" id="w3" value="eve"><label for="w3">This evening<small>6 to 8 pm</small></label>
+    </div>
+    <div class="consent"><input type="checkbox" id="k" checked><label for="k">I agree to be called and recorded by HappySmile about my enquiry.</label></div>
+    <div style="margin-top:18px"><button class="btn btn-primary btn-lg" id="b" type="submit">Call me</button></div>
+    <p class="p-note">We book visits on the call. We don't give medical advice or final prices by phone.</p>
+   </form>
+
+   <!-- confirmation state -->
+   <div class="p-body done" id="done" hidden>
+    <div class="ring" aria-hidden="true"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></div>
+    <h2 id="d-title" tabindex="-1">Thanks, Riya</h2>
+    <p class="when" id="d-when">We'll call you in about 2 minutes.</p>
+    <p class="from">The call comes from 020-XXXX-1234</p>
+    <div class="sumcard" id="d-sum"></div>
+    <div class="helpbox"><b>Prefer to talk to our front desk?</b> Reply STAFF to the SMS we just sent and a team member will call you instead.</div>
+    <div style="margin-top:auto;padding-top:18px"><button class="btn btn-lg" id="back" type="button">Change my details</button></div>
+   </div>
+  </div>
+ </div>
+ <div class="state-toggle" role="group" aria-label="Show screen state">
+  <button type="button" id="st-form" aria-pressed="true">Before tapping Call me</button>
+  <button type="button" id="st-done" aria-pressed="false">After</button>
+ </div>
+</div>
+</section>
+
+<!-- ================= SCREEN 2 ================= -->
+<section class="screen" id="screen-staff" aria-label="Screen 2: what HappySmile sees afterwards" hidden>
+<div class="app">
+ <aside class="side">
+  <div class="brand"><span class="logo" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3c-2.5 0-4 2-4 4.5 0 3 1.2 4.5 2 8 .5 2.5 1 5.5 2.6 5.5 1.8 0 1.6-4.5 4.4-4.5s2.6 4.5 4.4 4.5c1.6 0 2.1-3 2.6-5.5.8-3.5 2-5 2-8C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></svg></span>HappySmile</div>
+  <a href="#staff" class="on"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Leads<span class="count" id="side-count">3</span></a>
+  <a aria-disabled="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Calendar</a>
+  <a aria-disabled="true"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Assistant rules</a>
+  <div class="who"><span class="avatar" aria-hidden="true">FD</span><div><b>Front desk</b><div class="muted">All clinics</div></div></div>
+ </aside>
+
+ <div class="main">
+  <div class="main-head">
+   <div class="grow"><h1>Today's leads</h1><p>Tuesday, 24 Nov · every enquiry lands here, whether or not the assistant reached them</p></div>
+   <label for="clinic" class="small" style="margin:0;align-self:center">Clinic</label>
+   <select id="clinic"><option value="">All clinics</option><option>Baner</option><option>Kothrud</option><option>Andheri</option></select>
+  </div>
+
+  <div class="stats">
+   <div class="stat"><div class="k">Enquiries today</div><div class="v">52</div></div>
+   <div class="stat"><div class="k">Median time to first call</div><div class="v">3 min</div><div class="d">was 4 to 6 hours</div></div>
+   <div class="stat"><div class="k">Visits booked</div><div class="v">18</div><div class="d">35% of enquiries</div></div>
+   <div class="stat"><div class="k">Waiting for staff</div><div class="v">9</div><div class="d warn">2 urgent</div></div>
+  </div>
+
+  <div class="panel">
+   <div class="tabs" role="tablist" id="tabs"></div>
+   <div class="scroll">
+    <table>
+     <thead><tr><th>Patient</th><th>Status</th><th>Intent</th><th>What happened</th><th>Next step</th><th>Owner</th></tr></thead>
+     <tbody id="rows"></tbody>
+    </table>
+   </div>
+  </div>
+  <p class="small muted" style="margin:12px 2px 0">Click a lead to see the summary, recording and full transcript. Staff can take over any lead at any time.</p>
+ </div>
+</div>
+</section>
+
+<div class="backdrop" id="bd"><aside class="drawer" role="dialog" aria-modal="true" aria-label="Lead details" id="dr"></aside></div>
+
+<script>
+/* ---------- data ---------- */
+var S={booked:["Booked, to confirm","c-booked"],staff:["Needs staff","c-staff"],urgent:["Urgent","c-urgent"],asked:["Asked for staff","c-staff"],sched:["Call scheduled","c-sched"],none:["No answer","c-none"]};
+var leads=[
+{id:"sneha",name:"Sneha Patil",treat:"Not sure",clinic:"Andheri",st:"urgent",score:30,cls:"low",when:"Right now",at:"11:18 am · 1 min call",
+ what:"Tooth pain and swelling for 2 days.",next:"Call now",hot:true,owner:"ai",
+ summary:"Sneha has tooth pain and a swollen cheek for two days. The assistant gave no advice and passed her to the Andheri front desk straight away.",
+ nextText:"Call Sneha now and offer a same-day slot at Andheri. Possible urgent case.",
+ parts:[["Clear about the treatment",5,30,"Not sure what she needs."],["Ready to book soon",15,30,"Wants to be seen today."],["Clinic confirmed",10,20,"Andheri."],["Questions answered",0,20,"Handed over before any questions."]],
+ ai:"Not asked",
+ chat:[["ai","0:00","Hi Sneha, this is Priya, an assistant from HappySmile. You asked us to call about your teeth. How can I help?"],["me","0:07","My tooth has been paining and my cheek is swollen for two days."],["ai","0:15","I'm sorry you're dealing with that. I'm passing you to our Andheri front desk right now so they can help you today. Please stay on the line.","Pain and swelling: urgent, handed to staff","red"],["me","0:26","Okay, thank you."]]},
+{id:"arjun",name:"Arjun Kulkarni",treat:"Implants",clinic:"Kothrud",st:"staff",score:55,cls:"mid",when:"Right now",at:"11:30 am · 2 min call",
+ what:"Wants a price and a comparison with another clinic.",next:"Call by 2 pm",owner:"ai",
+ summary:"Arjun is looking at implants. He asked for a price and whether HappySmile is better than another clinic. The assistant can't answer either, so it asked the front desk to call him before 2 pm. The call switched to Hindi.",
+ nextText:"Call Arjun before 2 pm (Hindi). He wants a price range and why HappySmile over another clinic.",
+ parts:[["Clear about the treatment",25,30,"Wants implants."],["Ready to book soon",10,30,"Wants a price first."],["Clinic confirmed",15,20,"Kothrud, not final."],["Questions answered",5,20,"Price and comparison go to staff."]],
+ ai:"Not asked",
+ chat:[["ai","0:00","Namaste Arjun, this is Priya, an assistant from HappySmile. You asked about implants. Is this a good time to talk?"],["me","0:08","Haan. Pehle price batao, aur kya doosri clinic se better hai?"],["ai","0:15","Bilkul, Hindi mein baat karte hain. Final price phone par batana mushkil hai, kyunki woh aapke check-up par depend karta hai. Kya main front desk se aapko call karwa doon? Woh aapke saare sawaal ka jawab denge.","Switched to Hindi · price and comparison handed to staff","amber"],["me","0:31","Haan, 2 baje tak call karo."],["ai","0:35","Theek hai. Hamari team aapko 2 baje se pehle call karegi. Dhanyavaad, Arjun."]]},
+{id:"pooja",name:"Pooja Desai",treat:"Braces",clinic:"Baner",st:"asked",score:null,when:"In 1 hour",at:"11:22 am · no call",
+ what:"Replied STAFF to the SMS. The assistant won't call.",next:"Call by 1 pm",owner:"fd",
+ summary:"Pooja asked about braces for her son and chose a call in 1 hour. She then replied STAFF to our SMS, so the assistant cancelled its call and the lead went straight to the front desk.",
+ nextText:"Call Pooja before 1 pm. She prefers to speak to a person.",
+ timeline:[["11:22 am","Form sent, consent given, chose 'In 1 hour'"],["11:22 am","SMS sent with the call time and the STAFF option"],["11:31 am","Replied STAFF. Assistant call cancelled, lead moved to front desk"],["by 1:00 pm","Front desk call",1]]},
+{id:"meera",name:"Meera Joshi",treat:"Implants",clinic:"Andheri",st:"none",score:null,when:"Right now",at:"11:10 am · 2 tries",
+ what:"No answer at 11:10 and 11:40.",next:"Assistant retries 3 pm",owner:"ai",
+ summary:"Meera asked for a call right now but didn't pick up twice. The assistant tries once more at 3 pm. If there's still no answer, the lead moves to the front desk with an SMS to Meera.",
+ nextText:"Nothing needed yet. Take over if you'd rather call Meera yourself.",
+ timeline:[["11:09 am","Form sent, consent given, chose 'Right now'"],["11:10 am","Assistant called, no answer"],["11:40 am","Assistant called, no answer. SMS sent"],["3:00 pm","Last assistant try, then front desk",1]]},
+{id:"riya",name:"Riya Mehta",treat:"Braces",clinic:"Baner",st:"booked",score:85,cls:"",when:"Right now",at:"11:42 am · 3 min call",
+ what:"Asked for Sat 11:00. Asked about EMI.",next:"Confirm slot",owner:"ai",
+ summary:"Riya wants braces and is interested in clear aligners. She asked for a free check at Baner on Saturday 11:00. She asked about EMI, which the front desk should explain. She asked if she was talking to a bot, and the assistant said yes.",
+ nextText:"Confirm Saturday 11:00 at Baner. The confirmation SMS goes out when you confirm. Explain EMI.",
+ parts:[["Clear about the treatment",28,30,"Named braces and clear aligners."],["Ready to book soon",27,30,"Took the first Saturday slot."],["Clinic confirmed",20,20,"Baner is close to her."],["Questions answered",10,20,"EMI question is waiting for staff."]],
+ ai:"Asked at 0:20 · told yes",
+ chat:[["ai","0:00","Hi Riya, this is Priya, an assistant from HappySmile. You asked about braces a moment ago. Is now a good time?"],["me","0:09","Yes, go ahead."],["ai","0:12","Great. Is it for you, and which clinic is easier, Baner or Kothrud?"],["me","0:20","For me. Baner. Wait, are you a real person or a bot?"],["ai","0:27","Good question. I'm an AI assistant for HappySmile. I can book your visit, and I can connect you to our front desk any time you like.","Asked if AI: answered honestly","ok"],["me","0:38","Okay, fine. Is there an EMI option?"],["ai","0:44","Our team can explain EMI at the clinic. I'll note it for them. Would Saturday at 11 work for a free check?","Question for staff: EMI","amber"],["me","0:53","Saturday 11 works."],["ai","0:56","I've requested Saturday 11:00 at Baner for you. Our team will confirm it by SMS shortly. Thank you, Riya.","Slot sent to staff to confirm","info"]]},
+{id:"karan",name:"Karan Shah",treat:"Whitening",clinic:"Kothrud",st:"sched",score:null,when:"This evening",at:"11:05 am · no call yet",
+ what:"Chose 'This evening'. Call set for 6 pm.",next:"Assistant calls 6 pm",owner:"ai",
+ summary:"Karan asked about whitening at Kothrud and chose a call this evening. The assistant will call at 6:00 pm. No call has happened yet.",
+ nextText:"Nothing needed. Take over if you'd rather call Karan yourself.",
+ timeline:[["11:05 am","Form sent, consent given, chose 'This evening'"],["11:05 am","SMS sent: we'll call between 6 and 8 pm"],["6:00 pm","Assistant call",1]]}
+];
+var tabsDef=[["all","All",function(){return true;}],["staff","Needs staff",function(l){return l.st==="urgent"||l.st==="staff"||l.st==="asked";}],["booked","Booked",function(l){return l.st==="booked";}],["ai","With assistant",function(l){return l.st==="sched"||l.st==="none";}]];
+var curTab="all",curClinic="",lastRow=null;
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]});}
+function byId(i){return document.getElementById(i);}
+function ownerHtml(l){return l.owner==="fd"?'<span class="owner fd"><i>FD</i>Front desk</span>':'<span class="owner"><i>AI</i>Assistant</span>';}
+function scoreHtml(l){return l.score==null?'<span class="score na">–</span>':'<span class="score '+l.cls+'">'+l.score+'</span>';}
+
+/* ---------- table ---------- */
+function render(){
+ var inClinic=leads.filter(function(l){return !curClinic||l.clinic===curClinic;});
+ byId('tabs').innerHTML=tabsDef.map(function(t){var n=inClinic.filter(t[2]).length;return '<button role="tab" type="button" data-t="'+t[0]+'" aria-selected="'+(t[0]===curTab)+'">'+t[1]+'<span class="c">'+n+'</span></button>';}).join('');
+ var f=tabsDef.filter(function(t){return t[0]===curTab;})[0][2];
+ var list=inClinic.filter(f);
+ byId('rows').innerHTML=list.length?list.map(function(l){
+  return '<tr tabindex="0" data-id="'+l.id+'"'+(l.st==="urgent"?' class="urgent"':'')+'><td><div class="nm">'+esc(l.name)+'</div><div class="sb">'+esc(l.treat)+' · '+esc(l.clinic)+'</div></td><td><span class="chip '+S[l.st][1]+'">'+S[l.st][0]+'</span></td><td>'+scoreHtml(l)+'</td><td class="sum">'+esc(l.what)+'</td><td class="next'+(l.hot?' hot':'')+'">'+esc(l.next)+'</td><td>'+ownerHtml(l)+'</td></tr>';
+ }).join(''):'<tr><td colspan="6" class="empty">No leads here.</td></tr>';
+ byId('side-count').textContent=leads.filter(tabsDef[1][2]).length;
+}
+byId('tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(b){curTab=b.dataset.t;render();}});
+byId('clinic').addEventListener('change',function(){curClinic=this.value;render();});
+byId('rows').addEventListener('click',function(e){var r=e.target.closest('tr[data-id]');if(r)openLead(r.dataset.id,r);});
+byId('rows').addEventListener('keydown',function(e){var r=e.target.closest('tr[data-id]');if(r&&(e.key==='Enter'||e.key===' ')){e.preventDefault();openLead(r.dataset.id,r);}});
+
+/* ---------- drawer ---------- */
+function wave(seed){var h='';for(var i=0;i<54;i++){var v=Math.abs(Math.sin((i+1)*(seed+1.3))*Math.cos(i*.41));h+='<i'+(i<6?' class="p"':'')+' style="height:'+(4+Math.round(v*19))+'px"></i>';}return h;}
+function openLead(id,row){
+ var l=leads.filter(function(x){return x.id===id;})[0],h='';
+ var tone=l.st==="urgent"?' hot':(l.st==="staff"||l.st==="asked"?' warm':'');
+ h+='<div class="d-head"><div class="grow"><h2>'+esc(l.name)+'</h2><div class="meta"><span class="chip '+S[l.st][1]+'">'+S[l.st][0]+'</span><span>'+esc(l.at)+'</span></div></div>';
+ h+=(l.owner==="fd"?'<button class="btn btn-sm" type="button" disabled>With front desk</button>':'<button class="btn btn-primary btn-sm" type="button" id="take">Take over</button>')+'<button class="btn btn-sm" type="button" id="x">Close</button></div><div class="d-body">';
+ h+='<div class="card nextbox'+tone+'"><h3>Next step for the front desk</h3><p>'+esc(l.nextText)+'</p></div>';
+ h+='<div class="card"><div class="row"><h3 class="grow" style="margin:0">Summary</h3>'+(l.score!=null?'<span class="small muted">Intent</span>'+scoreHtml(l):'')+'</div><p style="margin-top:8px">'+esc(l.summary)+'</p><div class="facts"><div><span>Treatment</span><b>'+esc(l.treat)+'</b></div><div><span>Clinic</span><b>'+esc(l.clinic)+'</b></div><div><span>Asked to be called</span><b>'+esc(l.when)+'</b></div>'+(l.ai?'<div><span>Asked if AI</span><b>'+esc(l.ai)+'</b></div>':'')+'</div></div>';
+ if(l.parts){
+  h+='<div class="card"><h3>How the intent score is worked out</h3>'+l.parts.map(function(p){return '<div class="part"><div class="row"><span class="grow">'+esc(p[0])+'</span><span><span class="v">'+p[1]+'</span> <span class="muted">/ '+p[2]+'</span></span></div><div class="bar" aria-hidden="true"><i style="width:'+(p[1]/p[2]*100)+'%"></i></div><div class="small muted">'+esc(p[3])+'</div></div>';}).join('')+'</div>';
+  h+='<div class="card"><h3>Recording</h3><div class="player"><button class="play" type="button" aria-label="Play recording"><svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4v16l13-8z"/></svg></button><span class="wave" aria-hidden="true">'+wave(l.score)+'</span><span class="small muted">'+esc(l.at.split(' · ')[1].replace(' call',''))+'</span></div><p class="small muted" style="margin-top:8px">The patient agreed to recording on the form.</p></div>';
+  h+='<div class="card"><h3>Transcript</h3><div class="chat">'+l.chat.map(function(c){var ai=c[0]==="ai";return '<div class="bub '+(ai?'b-ai':'b-me')+'"><div class="who">'+(ai?'Assistant':esc(l.name.split(' ')[0]))+'<span class="tm">'+c[1]+'</span></div>'+esc(c[2])+(c[3]?'<br><span class="flag '+(c[4]==="red"?'red':c[4]==="ok"?'ok':c[4]==="info"?'info':'')+'">'+esc(c[3])+'</span>':'')+'</div>';}).join('')+'</div></div>';
+ }else{
+  h+='<div class="card"><h3>What has happened</h3><ul class="timeline">'+l.timeline.map(function(t){return '<li'+(t[2]?' class="future"':'')+'><b>'+esc(t[0])+'</b>'+esc(t[1])+'</li>';}).join('')+'</ul></div>';
+ }
+ h+='</div>';
+ var dr=byId('dr');dr.innerHTML=h;dr.scrollTop=0;
+ byId('bd').classList.add('on');document.body.style.overflow='hidden';lastRow=row;
+ byId('x').addEventListener('click',closeLead);
+ var tk=byId('take');if(tk)tk.addEventListener('click',function(){l.owner="fd";tk.disabled=true;tk.textContent='Assigned to you';tk.classList.remove('btn-primary');render();});
+ byId('x').focus();
+}
+function closeLead(){var bd=byId('bd');if(!bd.classList.contains('on'))return;bd.classList.remove('on');document.body.style.overflow='';
+ if(lastRow){var r=document.querySelector('tr[data-id="'+lastRow.dataset.id+'"]');if(r)r.focus();}}
+byId('bd').addEventListener('mousedown',function(e){if(e.target===this)closeLead();});
+document.addEventListener('keydown',function(e){
+ if(e.key==='Escape')closeLead();
+ if(e.key==='Tab'&&byId('bd').classList.contains('on')){
+  var f=byId('dr').querySelectorAll('button:not(:disabled),[href],[tabindex]:not([tabindex="-1"])');if(!f.length)return;
+  var a=f[0],z=f[f.length-1];
+  if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}
+ }
+});
+
+/* ---------- screen 1 ---------- */
+var WHEN={now:["in about 2 minutes","Right now"],hour:["around 12:45 pm","In 1 hour"],eve:["between 6 and 8 pm today","This evening"]};
+var k=byId('k'),b=byId('b');
+k.addEventListener('change',function(){b.disabled=!k.checked;});
+function showDone(on){
+ byId('form').hidden=on;byId('done').hidden=!on;
+ byId('st-form').setAttribute('aria-pressed',!on);byId('st-done').setAttribute('aria-pressed',on);
+ if(on){
+  var w=document.querySelector('input[name=w]:checked').value,first=byId('n').value.trim().split(' ')[0]||'there';
+  byId('d-title').textContent='Thanks, '+first;
+  byId('d-when').textContent="We'll call you "+WHEN[w][0]+".";
+  byId('d-sum').innerHTML=[["Treatment",byId('t').value],["Clinic",byId('c').value],["Call time",WHEN[w][1]],["Number",byId('p').value]].map(function(r){return '<div><span>'+r[0]+'</span><b>'+esc(r[1])+'</b></div>';}).join('');
+ }
+}
+byId('form').addEventListener('submit',function(e){e.preventDefault();if(!k.checked)return;showDone(true);byId('d-title').focus();});
+byId('back').addEventListener('click',function(){showDone(false);});
+byId('st-form').addEventListener('click',function(){showDone(false);});
+byId('st-done').addEventListener('click',function(){if(!k.checked){k.checked=true;b.disabled=false;}showDone(true);});
+
+/* ---------- screen switch + theme ---------- */
+function showScreen(){
+ var s=location.hash==='#staff'?'staff':'patient';
+ byId('screen-patient').hidden=s!=='patient';byId('screen-staff').hidden=s!=='staff';
+ Array.prototype.forEach.call(document.querySelectorAll('.seg a'),function(a){if(a.dataset.screen===s)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+ document.title=(s==='staff'?'2 · Clinic view':'1 · Patient view')+' · HappySmile';
+ closeLead();window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',showScreen);
+byId('theme').addEventListener('click',function(){
+ var r=document.documentElement,cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'),nx=cur==='dark'?'light':'dark';
+ r.setAttribute('data-theme',nx);try{localStorage.setItem('hs_theme',nx);}catch(e){}
+});
+render();showScreen();
+</script>
+</body>
+</html>
