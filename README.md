@@ -26,7 +26,7 @@ Three people had different views:
 | Who | What they said | How this design answers it |
 |---|---|---|
 | Operations head | "Leads we call within 5 minutes convert 3x better." | The patient picks a call time, and "Right now" means within 5 minutes. |
-| Founder | "The AI should sound so human that nobody realises it's AI." | The assistant sounds natural and doesn't open by announcing it's an AI. It **never claims to be human**, though, and says it's an AI whenever asked. |
+| Founder | "The AI should sound so human that nobody realises it's AI." | The assistant sounds natural and introduces itself as HappySmile's **virtual assistant**, not as a person. It **never claims to be human** and confirms it's an AI whenever asked. |
 | Front-desk lead | "Every lead should still go to my team. I don't trust a bot with patients." | Every enquiry lands on the staff dashboard, whether or not the AI reached the person. Staff can take over any lead at any time. |
 
 ---
@@ -99,6 +99,7 @@ For leads with no call yet (scheduled, no answer, asked for staff), the panel sh
 
 | Situation | What the assistant does |
 |---|---|
+| Start of every call | Introduces itself as "Priya, a virtual assistant from HappySmile". |
 | Person asks "are you a bot / real person?" | Says honestly that it's an AI assistant for HappySmile and offers the front desk. |
 | Any other time | Never claims or implies it's human. |
 | Person speaks Hindi | Switches to Hindi. |
@@ -122,7 +123,7 @@ The transcripts in the demo show these rules in action:
 
 **2. Every lead goes to the front desk.** The assistant makes the first, fast call, and the team owns everything after it. That's what earns the front desk's trust. It's also safer, because nothing an AI can't handle gets lost.
 
-**3. Honest when asked, never pretending.** The founder wants the call to feel human. The assistant sounds natural and doesn't open with "I am an AI". When someone asks, it always tells the truth and never claims to be a person. Being caught lying on a recorded health call would cost more than any extra bookings.
+**3. Honest when asked, never pretending.** The founder wants the call to feel human. The assistant sounds natural and opens as HappySmile's "virtual assistant" rather than pretending to be a staff member. It doesn't lead with "I am an AI", but when someone asks, it always tells the truth and never claims to be a person. Being caught lying on a recorded health call would cost more than any extra bookings.
 
 **4. No medical advice, no prices.** These answers need a dentist or a check-up. Getting them wrong is a clinical and trust risk, so they always go to staff.
 
